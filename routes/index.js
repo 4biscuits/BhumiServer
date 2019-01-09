@@ -232,7 +232,6 @@ router.get('/getFeedback/:email/:feedback', function(req, res) {
   
 }); 
 
-// TODO, change this very bad thing
 router.get('/showFeedback/:secretKey', function(req,res) {
   let secret = process.env.SECRET;
 
@@ -249,12 +248,14 @@ router.get('/showFeedback/:secretKey', function(req,res) {
 
 router.get('/clearFeedback/:secretKey', function(req, res) {
   let secret = process.env.SECRET;
+  if (req.params.secretKey === secret) {
   Feedback.remove({}, function(err, feedback) {
     if (err) {
       res.send("Error 404");
     }
     res.send("Cleared the feedback logs");
   });
-
+  }
 });
+
 module.exports = router;

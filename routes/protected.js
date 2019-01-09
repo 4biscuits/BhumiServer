@@ -4,35 +4,35 @@
 */
 var express = require('express');
 var router = express.Router();
-var request = require("request");
 
-
-
-router.post('/', function(req, res, next) {
-
-  var options = { 
-  method: 'POST',
-  url: 'https://docs.google.com/forms/d/e/1FAIpQLSdwA-6lR5xERMFHPkW77kyJb4-UZFSawCHfyiQOzFZUxxsBzg/formResponse',
-  headers: 
-   { 'cache-control': 'no-cache',
-     'Content-Type': 'application/x-www-form-urlencoded' },
-  form: 
-   { 'entry.1929656395'	: req.body.email,
-     'entry.1596879920'	: req.body.phone,
-     'entry.912318726'	: req.body.parentName,
-    'entry.2058139695' 	: req.body.childName,
-    'entry.1012257266' 	: req.body.dateOfBirth,
-     'entry.1085914342'	: req.body.pinCode,
-     'entry.1958529600'	: req.body.certificate,
-     'entry.488536056'	: req.body.comment }
-  };
-  request(options, function (error, response, body) {
-    if (error){
-      res.json({'success':false, msg:'Error!'})
-    } 
-    res.json({'success': true, msg: 'Successfully submitted the details'});
+router.get('/refer/:referer/:email', function(err, res) {
+  var smtpTransport = nodemailer.createTransport({
+    service: 'SendGrid',
+    auth: {
+      user: process.env.SENDGRID_USER,
+      pass: process.env.SENDGRID_PASSWORD
+    }
   });
 
+  // Create the mail contents
+  var mailOptions = {
+    to: req.params.email,
+    from: req.params.referer,
+    subject: 'Bhumi RTE App Password Reset',
+    text: 'Hello, \n\n'+' Join bhumi and change the world\n\n' +
+      'Please click on the following link, or paste this into your browser register:\n\n' +
+      'http://www.bhumi.ngo/volunteer/\n\n' +
+      'If you do not want to be a part of this, please ignore this email.\n\n' + 'Thank You'
+  };
+
+  // Send the generated mail
+  smtpTransport.sendMail(mailOptions, function(err) {
+    // Done sending the mail
+    if (err) {
+      res.json({'success':false, 'msg': 'Server hangup, please try again after sometime'});
+    }
+    res.json({'success': true, 'msg': 'Successfully sent a referral mail to your friend'});
+  });
 });
 
 module.exports = router;
