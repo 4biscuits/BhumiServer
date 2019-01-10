@@ -39,7 +39,7 @@ UserSchema.pre('save',function(next){
 /*
 * Helper method to compare the encrypted password with plain text password
 */
-UserSchema.methods.comparePassword = function(passw,cb){
+UserSchema.methods.comparePassword = function(passw, cb){
   bcrypt.compare(passw,this.password,function(err,isMatch){
     if (err){
       return cb(err);

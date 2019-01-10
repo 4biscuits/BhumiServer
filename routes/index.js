@@ -8,11 +8,9 @@ const bcrypt = require('bcrypt-nodejs');
 var passport = require('passport');
 require('../config/passport')(passport);
 var jwt = require('jsonwebtoken');
-var mongoose = require('mongoose');
 var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
-var sgTransport = require('nodemailer-sendgrid-transport');
 var config = require('../config/database');
 var Feedback = require('../models/Feedback');
 

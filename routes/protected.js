@@ -5,7 +5,7 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/refer/:referer/:email', function(err, res) {
+router.get('/refer/:referer/:email', function(req, res) {
   var smtpTransport = nodemailer.createTransport({
     service: 'SendGrid',
     auth: {
