@@ -8,7 +8,9 @@ var UserSchema = new Schema({
   email:{ type:String, require: true, unique: true},
   password:{ type:String, required: true},
   mobile: {type: String, required: true},
-  pin: {type: String, required: true},
+  city: {type: String, required: true},
+  bloodGroup: {type: String, required: true},
+  name: {type: String, required: true},
   resetPasswordToken: {type: String},
   resetPasswordExpires: {type: Date},
   type: {type: String, default:"user"}

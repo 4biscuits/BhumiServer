@@ -63,7 +63,10 @@ router.post('/signup/',function(req,res,next){
 		      email: req.body.email,
           password:req.body.password,
           mobile: req.body.phone,
-          pin: req.body.pin
+          pin: req.body.pin,
+          city: req.body.city,
+          bloodGroup: req.body.bloodGroup,
+          name: req.body.name
 	      });
 	      newUser.save(function(err,success){
 		      if(err){
