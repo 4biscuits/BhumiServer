@@ -29,7 +29,7 @@ router.post('/signin/', function(req, res, next) {
     email:req.body.email
   }, function(err,user){
     if (err) throw err;
-    if (!user){
+    if (!user || user.type === 'admin'){
       res.send({success: false, msg: 'Authentication failed. User not found'});
     }else{
       user.comparePassword(req.body.password, function(err, isMatch){
@@ -44,6 +44,30 @@ router.post('/signin/', function(req, res, next) {
   });
 });
 
+/*
+*  Endpoint that performs admin signin
+*/
+router.post('/adminsignin/', function(req, res, next) {
+	User.findOne({
+	  email:req.body.email
+	}, function(err,user){
+	  if (err) throw err;
+	  if (!user || user.type === 'user') {
+		res.send ({success: false, msg: 'Authentication failed. Admin Not found'})
+	  }
+	  else{
+	    user.comparePassword(req.body.password, function(err, isMatch){
+	      if (isMatch && !err){
+		var token = jwt.sign(user.toObject(), config.secret);
+		res.json({success:true, token: token, msg:"Successfully logged in!"});
+	      }else{
+		res.status(401).send({success:false, msg:'Authentication failed. Wrong password'});
+	      }
+	    })
+	  }
+	});
+      });
+
 
 /*
 *  Endpoint that performs user signup
@@ -53,6 +77,8 @@ router.post('/signup/',function(req,res,next){
     res.json({success:false, msg:'Please fill up stuff'});
   }else{
       User.findOne({email:req.body.email},function(err,usr){
+	      let admin = req.body.type === 'admin' ? 'admin' : 'user';
+	      console.log (admin);
 	    if (err){
 	      res.json({success:false, msg:"Server Hangup!"});
 	    }
@@ -61,18 +87,17 @@ router.post('/signup/',function(req,res,next){
 	    }else{
 	      var newUser = new User({
 		      email: req.body.email,
-          password:req.body.password,
-          mobile: req.body.phone,
-          pin: req.body.pin,
-          city: req.body.city,
-          bloodGroup: req.body.bloodGroup,
-          name: req.body.name
+		      password:req.body.password,
+		      mobile: req.body.phone,
+		      pin: req.body.pin,
+		      city: req.body.city,
+		      bloodGroup: req.body.bloodGroup,
+		      name: req.body.name,
+		      type: admin
 	      });
 	      newUser.save(function(err,success){
-		      if(err){
-		        res.json({success: false, msg:'Database Hangup!'});
-		       }
-		      res.json({success:true, msg:'Successfully created new user, login now!'});
+		      if(err) res.json({success: false, msg:'Database Hangup!'+err});
+		      else res.json({success:true, msg:'Successfully created new user, login now!'});
 	        })
 	  }});
   }

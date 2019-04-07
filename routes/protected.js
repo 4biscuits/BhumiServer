@@ -1,38 +1,35 @@
-/*
-* Protected route to make a post request to the 
-* google form based upon the obtained user details
-*/
 var express = require('express');
 var router = express.Router();
+var Meetup = require('../models/Meetup');
+var Orientation = require ('../models/Orientation');
 
-router.get('/refer/:referer/:email', function(req, res) {
-  var smtpTransport = nodemailer.createTransport({
-    service: 'SendGrid',
-    auth: {
-      user: process.env.SENDGRID_USER,
-      pass: process.env.SENDGRID_PASSWORD
-    }
-  });
+router.get ('/get-meetups', function (err, res) {
+	if (err) {
+		res.json ({'success':false, msg:'Some error, contact us'});
+	}
+	// Todo, implement pagination
+	Meetup.find({}, function (err, meetups) {
+		if (err) {
+			res.json ({'success':false, msg:'Unable to fetch events'});
+		}
+		else res.json ({'success': true, 'meetups': meetups});
+	});
+	
+})
 
-  // Create the mail contents
-  var mailOptions = {
-    to: req.params.email,
-    from: req.params.referer,
-    subject: 'Bhumi RTE App Password Reset',
-    text: 'Hello, \n\n'+' Join bhumi and change the world\n\n' +
-      'Please click on the following link, or paste this into your browser register:\n\n' +
-      'http://www.bhumi.ngo/volunteer/\n\n' +
-      'If you do not want to be a part of this, please ignore this email.\n\n' + 'Thank You'
-  };
 
-  // Send the generated mail
-  smtpTransport.sendMail(mailOptions, function(err) {
-    // Done sending the mail
-    if (err) {
-      res.json({'success':false, 'msg': 'Server hangup, please try again after sometime'});
-    }
-    res.json({'success': true, 'msg': 'Successfully sent a referral mail to your friend'});
-  });
-});
+router.get ('/get-orientations', function (err, res) {
+	if (err) {
+		res.json ({'success':false, msg:'Some error, contact us'});
+	}
+	// Todo, implement pagination
+	Orientation.find({}, function (err, orientations) {
+		if (err) {
+			res.json ({'success':false, msg:'Unable to fetch events'});
+		}
+		else res.json ({'success': true, 'orientations': orientations});
+	});
+	
+})
 
 module.exports = router;

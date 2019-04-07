@@ -6,6 +6,7 @@ var config = require('./config/database');
 var indexRouter = require('./routes/index');
 var webRouter = require('./routes/web');
 var protectedRouter = require('./routes/protected');
+var adminRouter = require('./routes/admin');
 var mongoose = require('mongoose');
 var flash = require('connect-flash');
 var fileUpload = require('express-fileupload');
@@ -49,8 +50,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-
 app.use('/', indexRouter);
+app.use('/admin', passport.authenticate('jwt', {session: false}), protectedRouter);
 app.use('/form', passport.authenticate('jwt', {session: false}), protectedRouter);
 app.use('/web', webRouter);
 
