@@ -13,6 +13,32 @@ var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var config = require('../config/database');
 var Feedback = require('../models/Feedback');
+var Meetup = require ('../models/Meetup');
+var Orientation = require ('../models/Orientation');
+
+router.get ('/get-meetups', function (req, res) {
+	// Todo, implement pagination
+	Meetup.find({}, function (err, meetups) {
+		if (err) {
+      res.json ({'success':false, msg:'Unable to fetch events'});
+      return;
+		}
+		res.json ({'success': true, 'meetups': meetups});
+	});
+	
+})
+
+
+router.get ('/get-orientations', function (req, res) {
+	// Todo, implement pagination
+	Orientation.find({}, function (err, orientations) {
+		if (err) {
+			res.json ({'success':false, msg:'Unable to fetch events'});
+		}
+		else res.json ({'success': true, 'orientations': orientations});
+	});
+	
+})
 
 /*
 * Just a dummy endpoint to test if the server is up

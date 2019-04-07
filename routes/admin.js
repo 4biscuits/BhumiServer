@@ -5,7 +5,8 @@ var router = express.Router();
 
 router.post ('/add-orientation', function (err, res) {
 	if (err) {
-		res.json ({'success': false, msg: 'Some error, contact us'});
+    res.json ({'success': false, msg: 'Some error, contact us'});
+    return;
 	}
 	let orientation = new Orientation({
 		city: req.body.city,
@@ -17,7 +18,7 @@ router.post ('/add-orientation', function (err, res) {
 		}
 		else res.json ({'success': true, msg: 'Added orientation'});
 	})
-})
+});
 
 router.post ('/update-orientation', function (err, res) {
 	if (err) {
